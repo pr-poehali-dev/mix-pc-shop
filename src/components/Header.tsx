@@ -84,8 +84,6 @@ export default function Header() {
         open={authDialogOpen} 
         onOpenChange={setAuthDialogOpen} 
       />
-        </div>
-      </div>
     </header>
   );
 }
