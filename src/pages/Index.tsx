@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Header from '@/components/Header';
 import CategoryFilter from '@/components/CategoryFilter';
 import ProductCard from '@/components/ProductCard';
+import FilterSidebar from '@/components/FilterSidebar';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
@@ -103,10 +104,27 @@ const products = [
 
 export default function Index() {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200000]);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [inStockOnly, setInStockOnly] = useState(false);
 
-  const filteredProducts = selectedCategory === 'all' 
-    ? products 
-    : products.filter(p => p.category === selectedCategory);
+  const handleBrandToggle = (brand: string) => {
+    setSelectedBrands(prev => 
+      prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+    );
+  };
+
+  const handleResetFilters = () => {
+    setPriceRange([0, 200000]);
+    setSelectedBrands([]);
+    setInStockOnly(false);
+  };
+
+  const filteredProducts = products
+    .filter(p => selectedCategory === 'all' || p.category === selectedCategory)
+    .filter(p => p.price >= priceRange[0] && p.price <= priceRange[1])
+    .filter(p => selectedBrands.length === 0 || selectedBrands.includes(p.brand))
+    .filter(p => !inStockOnly || p.inStock);
 
   return (
     <div className="min-h-screen bg-background">
@@ -140,34 +158,44 @@ export default function Index() {
       </section>
 
       <main className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold">
-            {selectedCategory === 'all' ? 'Популярные товары' : 'Товары в категории'}
-          </h2>
-          <div className="flex items-center gap-4">
-            <span className="text-muted-foreground">
-              Найдено товаров: {filteredProducts.length}
-            </span>
-            <Button variant="outline" className="gap-2">
-              <Icon name="SlidersHorizontal" size={18} />
-              Фильтры
-            </Button>
+        <div className="flex gap-8">
+          <aside className="w-80 flex-shrink-0">
+            <FilterSidebar
+              priceRange={priceRange}
+              onPriceRangeChange={setPriceRange}
+              selectedBrands={selectedBrands}
+              onBrandToggle={handleBrandToggle}
+              inStockOnly={inStockOnly}
+              onInStockToggle={setInStockOnly}
+              onResetFilters={handleResetFilters}
+            />
+          </aside>
+
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold">
+                {selectedCategory === 'all' ? 'Популярные товары' : 'Товары в категории'}
+              </h2>
+              <span className="text-muted-foreground">
+                Найдено товаров: {filteredProducts.length}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} {...product} />
+              ))}
+            </div>
+
+            {filteredProducts.length === 0 && (
+              <div className="text-center py-20">
+                <Icon name="Package" size={64} className="mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-2xl font-semibold mb-2">Товары не найдены</h3>
+                <p className="text-muted-foreground">Попробуйте изменить фильтры или выбрать другую категорию</p>
+              </div>
+            )}
           </div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))}
-        </div>
-
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-20">
-            <Icon name="Package" size={64} className="mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-2xl font-semibold mb-2">Товары не найдены</h3>
-            <p className="text-muted-foreground">Попробуйте изменить фильтры или выбрать другую категорию</p>
-          </div>
-        )}
       </main>
 
       <footer className="bg-card border-t border-border mt-20">
