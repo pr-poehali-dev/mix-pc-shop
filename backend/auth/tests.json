@@ -1,0 +1,26 @@
+{
+  "tests": [
+    {
+      "name": "Register new user",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "email": "newuser@example.com",
+        "password": "testpass123",
+        "full_name": "Test User",
+        "phone": "+79991234567"
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "token": "string",
+        "user": {
+          "id": "number",
+          "email": "string",
+          "full_name": "string",
+          "role": "string"
+        }
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

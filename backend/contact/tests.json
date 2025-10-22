@@ -1,0 +1,23 @@
+{
+  "tests": [
+    {
+      "name": "Send contact message",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "name": "Test User",
+        "email": "test@example.com",
+        "phone": "+79991234567",
+        "subject": "Question about product",
+        "message": "Hello, I have a question..."
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "success": true,
+        "message": "string",
+        "id": "number"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

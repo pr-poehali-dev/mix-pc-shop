@@ -1,0 +1,18 @@
+{
+  "tests": [
+    {
+      "name": "Get categories and brands",
+      "method": "GET",
+      "path": "/",
+      "headers": {
+        "X-Auth-Token": "test-admin-token"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "categories": "array",
+        "brands": "array"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

@@ -149,9 +149,9 @@ export default function Index() {
               Лучшие цены на комплектующие от ведущих производителей. 
               Гарантия качества и быстрая доставка.
             </p>
-            <Button size="lg" className="gap-2 animate-scale-in">
+            <Button size="lg" className="gap-2 animate-scale-in" onClick={() => window.location.href = '/catalog'}>
               <Icon name="Zap" size={20} />
-              Подобрать сборку
+              Перейти в каталог
             </Button>
           </div>
         </div>
